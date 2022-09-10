@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+
+config/firebase_config.json
+config/service_account.json
+
+.idea
+.env
