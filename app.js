@@ -8,6 +8,9 @@ const v1Api = require('./routes')
 const limiterMiddleWare = require('./middlewares/limiter.middleware')
 const serviceAccount = require('./config/service_account.json')
 const firebaseConfig = require('./config/firebase_config.json')
+const dotenv = require('dotenv')
+
+dotenv.config({path: `.env.${process.env.NODE_ENV}`})
 
 const {
   initializeApp,

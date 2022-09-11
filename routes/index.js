@@ -4,6 +4,6 @@ const userRoute = require('./user.route')
 
 const app = new Router()
 
-app.use('/auth/:type', authMiddleware.decodeToken, userRoute.routes())
+app.use('/user', authMiddleware.verifyToken, userRoute.routes())
 
 module.exports = app

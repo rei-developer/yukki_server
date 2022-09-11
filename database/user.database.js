@@ -16,8 +16,7 @@ module.exports.addUser = async columns => {
 module.exports.getUserById = async id => {
   const result = await pool.query(
     `SELECT
-			id,
-      point,
+			address,
 			isAdmin
 		FROM Users
 		WHERE id = ?`,
@@ -26,15 +25,15 @@ module.exports.getUserById = async id => {
   return result[0] || false
 }
 
-module.exports.getUserByUId = async uid => {
+module.exports.getUserByAuthTypeAndUId = async (authType, uid) => {
   const result = await pool.query(
     `SELECT
 			id,
       point,
 			isAdmin
 		FROM Users
-		WHERE uid = ?`,
-    [uid],
+		WHERE authType = ? AND uid = ?`,
+    [authType, uid],
   )
   return result[0] || false
 }

@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start:prod": "pm2 start app.js --name 'Yukki Server'",
-    "dev": "nodemon app.js"
+    "start:prod": "pm2 start app.js --name 'Project Yukki Server' NODE_ENV=product",
+    "dev": "nodemon app.js NODE_ENV=dev"
   },
   "dependencies": {
     "@koa/cors": "^3.4.1",
@@ -13,6 +13,7 @@
     "eth-lightwallet": "^4.0.0",
     "firebase": "^9.8.4",
     "firebase-admin": "^11.0.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-helmet": "^6.1.0",

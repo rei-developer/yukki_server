@@ -2,7 +2,7 @@ const util = require('util')
 const mysql = require('mysql')
 const dotenv = require('dotenv')
 
-dotenv.config()
+dotenv.config({path: `.env.${process.env.NODE_ENV}`})
 
 const {
   DB_HOST,

@@ -1,36 +1,40 @@
 const {
   addUser,
-  getUserByUId,
+  getUserById,
+  getUserByAuthTypeAndUId,
 } = require('../database/user.database')
 const {encrypt} = require('../utils/crypto-js')
 const {generateAccount} = require('../utils/eth-wallet')
 const {hasher} = require('../utils/hasher')
+const {generateJwt} = require('../utils/jwt')
 const {
   INVALID_PARAMETER,
   ALREADY_EXIST,
+  DOES_NOT_EXIST,
 } = require('../config/error_exceptions.json')
 
 module.exports.verifyUser = async ctx => {
+  const {type: authType} = ctx.state.auth
   const {uid} = ctx.state.user
-  const idToken = ctx.state.idToken
+  const user = await getUserByAuthTypeAndUId(authType, uid)
+  if (!user) {
+    ctx.throw(403, DOES_NOT_EXIST)
+    return
+  }
   ctx.body = {
     uid,
-    idToken,
-    hasUser: !!(await getUserByUId(uid)),
+    token: await generateJwt({...user}),
   }
 }
 
 module.exports.getUserProfile = async ctx => {
-  const {
-    uid,
-    name,
-    picture,
-  } = ctx.state.user
-  ctx.body = {
-    uid,
-    name,
-    profileImageUrl: picture,
+  const {id} = ctx.state.user
+  const user = await getUserById(id)
+  if (!user) {
+    ctx.throw(403, DOES_NOT_EXIST)
+    return
   }
+  ctx.body = {id, ...user}
 }
 
 module.exports.addUser = async ctx => {
@@ -39,9 +43,9 @@ module.exports.addUser = async ctx => {
     ctx.throw(400, INVALID_PARAMETER)
     return
   }
-  const authType = ctx.state.authType
+  const {type: authType} = ctx.state.auth
   const {uid} = ctx.state.user
-  if (await getUserByUId(uid)) {
+  if (await getUserByAuthTypeAndUId(authType, uid)) {
     ctx.throw(403, ALREADY_EXIST)
     return
   }
@@ -53,13 +57,13 @@ module.exports.addUser = async ctx => {
   try {
     const {
       hash: passwordHash,
-      salt: passwordSalt,
+      salt,
     } = await hasher({password})
     ctx.body = await addUser({
       authType,
       uid,
       password: passwordHash,
-      salt: passwordSalt,
+      salt,
       address,
       mnemonic: encrypt(mnemonic),
       privateKey: encrypt(privateKey),
