@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start:prod": "pm2 start app.js --name 'Project Yukki Server' NODE_ENV=product",
-    "dev": "nodemon app.js NODE_ENV=dev"
+    "start:prod": "NODE_ENV=product pm2 start app.js --name 'Project Yukki Server'",
+    "dev": "NODE_ENV=dev nodemon app.js"
   },
   "dependencies": {
     "@koa/cors": "^3.4.1",
